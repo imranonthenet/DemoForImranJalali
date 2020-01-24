@@ -1,0 +1,74 @@
+﻿@model DemoForImranJalali.Models.Customer
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+
+    
+<div class="form-horizontal">
+    <h4>Customer</h4>
+    <hr />
+    <ul id="listErrors" class="text-danger"></ul>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" id="btnCreate" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $("#btnCreate").click(function () {
+
+        $.ajax({
+            url: "/customers",
+            type: "POST",
+            data: "{'FirstName':'" + $("#FirstName").val() + "', 'LastName':'" + $("#LastName").val() + "'}",
+            contentType: "application/json",
+            success: function (data) {
+
+                $("#listErrors").empty();
+
+                if (data.errors != null) {
+                    data.errors.forEach(function (item, index) {
+                        //document.getElementById("divErrors").innerHTML += index + ":" + item.ErrorMessage + "<br>";
+                        $("#listErrors").append("<li>" + item.ErrorMessage + "</li>");
+                    });
+                }
+                else {
+                    window.location = data.response.RedirectURL;
+
+                }
+
+            },
+            error: function (x, t, m, b) {
+                console.log(x.responseText);
+            }
+        });
+    });
+
+
+</script>
